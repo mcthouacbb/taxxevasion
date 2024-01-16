@@ -54,15 +54,12 @@ private:
 
 inline Move::Move(int dst)
 {
-    assert(dst >= 0 && dst < 49 && "Dst pos is out of range");
-    m_Data = static_cast<uint16_t>(dst | (49 << 6));
+    m_Data = static_cast<uint16_t>(dst | (63 << 6));
 }
 
 inline Move::Move(int src, int dst)
 {
-    assert(src >= 0 && src < 49 && "Src pos is out of range");
-    assert(dst >= 0 && dst < 49 && "Dst pos is out of range");
-    m_Data = static_cast<uint16_t>(src | (dst << 6));
+    m_Data = static_cast<uint16_t>(dst | (src << 6));
 }
 
 
@@ -83,7 +80,7 @@ inline int Move::fromTo() const
 
 inline bool Move::isDouble() const
 {
-    return srcPos() != 49;
+    return srcPos() != 63;
 }
 
 constexpr int MAX_PLY = 128;

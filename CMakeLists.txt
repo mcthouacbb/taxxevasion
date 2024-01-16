@@ -10,6 +10,8 @@ endif()
 project(taxxevasion)
 
 set(SRCS
+    "src/utils/static_vector.h"
+
     "src/attacks.cpp"
     "src/attacks.h"
     "src/bitboard.h"
@@ -17,6 +19,8 @@ set(SRCS
     "src/board.h"
     "src/defs.h"
     "src/main.cpp"
+    "src/movegen.cpp"
+    "src/movegen.h"
 )
 
 add_executable(taxx-evasion ${SRCS})

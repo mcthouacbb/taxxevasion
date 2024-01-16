@@ -25,13 +25,13 @@ void Board::setToFen(const std::string_view& fen)
             case 'X':
             case 'b':
             case 'B':
-                pieces(Color::BLACK) |= 1ull << sq++;
+                    state().pieces[static_cast<int>(Color::BLACK)] |= 1ull << sq++;
                 break;
             case 'o':
             case 'O':
             case 'w':
             case 'W':
-                pieces(Color::WHITE) |= 1ull << sq++;
+                state().pieces[static_cast<int>(Color::WHITE)] |= 1ull << sq++;
                 break;
             case '-':
                 m_Blockers |= 1ull << sq++;
@@ -142,15 +142,15 @@ void Board::makeMove(Move move)
     state().halfMoveClock++;
 
     if (!move.isDouble())
-        pieces(m_SideToMove) ^= (1ull << move.srcPos());
+        state().pieces[static_cast<int>(m_SideToMove)] ^= (1ull << move.srcPos());
     else
         state().halfMoveClock = 0;
 
-    pieces(m_SideToMove) |= (1ull << move.dstPos());
+    state().pieces[static_cast<int>(m_SideToMove)] |= (1ull << move.dstPos());
 
-    BitBoard adjOpps = pieces(flip(m_SideToMove)) & attacks::adjSquaresBB(1ull << move.dstPos());
-    pieces(m_SideToMove) |= adjOpps;
-    pieces(flip(m_SideToMove)) ^= adjOpps;
+    BitBoard adjOpps = state().pieces[static_cast<int>(flip(m_SideToMove))] & attacks::adjSquaresBB(move.dstPos());
+    state().pieces[static_cast<int>(m_SideToMove)] |= adjOpps;
+    state().pieces[static_cast<int>(flip(m_SideToMove))] ^= adjOpps;
 
     m_SideToMove = flip(m_SideToMove);
 }
