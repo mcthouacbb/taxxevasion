@@ -65,7 +65,7 @@ uint64_t perft(Board& board, int depth)
         if constexpr (print)
         {
             std::cout << moveStr(move) << ": " << subNodes << std::endl;
-            std::cout << board.fenStr() << std::endl;
+            // std::cout << board.fenStr() << std::endl;
         }
         nodes += subNodes;
         board.unmakeMove(move);
@@ -76,21 +76,25 @@ uint64_t perft(Board& board, int depth)
 int main()
 {
     attacks::init();
-    for (const auto& [fen, nodeCounts] : positions)
-    {
-        Board board;
-        board.setToFen(fen);
-        for (int depth = 1; depth < static_cast<int>(nodeCounts.size()); depth++)
-        {
-            uint64_t nodes = perft<false, false>(board, depth);
-            bool correct = nodes == nodeCounts[depth];
-            std::cout << fen << ", " << depth << ", " << nodes << ", " << (correct ? "pass" : "fail") << std::endl;
-        }
-    }
 
     std::string line;
     while (std::getline(std::cin, line))
     {
+        if (line == "tests")
+        {
+            for (const auto& [fen, nodeCounts] : positions)
+            {
+                Board board;
+                board.setToFen(fen);
+                for (int depth = 1; depth < static_cast<int>(nodeCounts.size()); depth++)
+                {
+                    uint64_t nodes = perft<false, false>(board, depth);
+                    bool correct = nodes == nodeCounts[depth];
+                    std::cout << fen << ", " << depth << ", " << nodes << ", " << (correct ? "pass" : "fail") << std::endl;
+                }
+            }
+            continue;
+        }
         std::string fen;
         int depth;
         std::stringstream ss(line);

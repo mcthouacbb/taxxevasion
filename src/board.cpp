@@ -141,7 +141,7 @@ void Board::makeMove(Move move)
     m_States.push_back(state());
     state().halfMoveClock++;
 
-    if (!move.isDouble())
+    if (move.isDouble())
         state().pieces[static_cast<int>(m_SideToMove)] ^= (1ull << move.srcPos());
     else
         state().halfMoveClock = 0;
