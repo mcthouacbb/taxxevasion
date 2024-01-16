@@ -46,6 +46,7 @@ public:
     int dstPos() const;
     int fromTo() const;
     bool isDouble() const;
+    bool isNull() const;
 private:
     static constexpr int TYPE_MASK = 1 << 12;
 
@@ -81,6 +82,11 @@ inline int Move::fromTo() const
 inline bool Move::isDouble() const
 {
     return srcPos() != 63;
+}
+
+inline bool Move::isNull() const
+{
+    return m_Data == 0;
 }
 
 constexpr int MAX_PLY = 128;

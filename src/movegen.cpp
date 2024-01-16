@@ -4,6 +4,9 @@
 void genMoves(const Board& board, MoveList& moveList)
 {
     assert(moveList.size() == 0);
+    
+    if (board.gameOver())
+        return;
 
     BitBoard stmPieces = board.pieces(board.sideToMove());
     BitBoard moveMask = ~(board.pieces(Color::WHITE) | board.pieces(Color::BLACK) | board.blockers());
@@ -27,4 +30,7 @@ void genMoves(const Board& board, MoveList& moveList)
             moveList.push_back(Move(piece, doubleMove));
         }
     }
+
+    if (moveList.size() == 0)
+        moveList.push_back(Move());
 }

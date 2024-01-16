@@ -29,13 +29,18 @@ public:
     std::string stringRep() const;
     std::string fenStr() const;
 
+    bool gameOver() const;
+
     Color sideToMove() const;
     Piece pieceAt(int sq) const;
     BitBoard pieces(Color color) const;
     BitBoard blockers() const;
+    int halfMoveClock() const;
 
     void makeMove(Move move);
-    void unmakeMove(Move move);
+    void unmakeMove();
+
+    void makeNullMove();
 private:
     BoardState& state();
     const BoardState& state() const;
@@ -44,6 +49,17 @@ private:
     Color m_SideToMove;
     std::vector<BoardState> m_States;
 };
+
+inline bool Board::gameOver() const
+{
+    if (pieces(Color::WHITE) == 0)
+        return true;
+    if (pieces(Color::BLACK) == 0)
+        return true;
+    if (halfMoveClock() >= 100)
+        return true;
+    return false;
+}
 
 inline Color Board::sideToMove() const
 {
@@ -69,6 +85,11 @@ inline BitBoard Board::pieces(Color color) const
 inline BitBoard Board::blockers() const
 {
     return m_Blockers;
+}
+
+inline int Board::halfMoveClock() const
+{
+    return state().halfMoveClock;
 }
 
 inline BoardState& Board::state()

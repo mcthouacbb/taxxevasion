@@ -138,6 +138,11 @@ std::string Board::fenStr() const
 
 void Board::makeMove(Move move)
 {
+    if (move.isNull())
+    {
+        makeNullMove();
+        return;
+    }
     m_States.push_back(state());
     state().halfMoveClock++;
 
@@ -155,8 +160,14 @@ void Board::makeMove(Move move)
     m_SideToMove = flip(m_SideToMove);
 }
 
-void Board::unmakeMove(Move move)
+void Board::unmakeMove()
 {
     m_SideToMove = flip(m_SideToMove);
     m_States.pop_back();
+}
+
+void Board::makeNullMove()
+{
+    m_States.push_back(state());
+    m_SideToMove = flip(m_SideToMove);
 }

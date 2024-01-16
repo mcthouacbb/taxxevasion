@@ -68,7 +68,7 @@ uint64_t perft(Board& board, int depth)
             // std::cout << board.fenStr() << std::endl;
         }
         nodes += subNodes;
-        board.unmakeMove(move);
+        board.unmakeMove();
     }
     return nodes;
 }
