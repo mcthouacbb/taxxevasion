@@ -10,6 +10,10 @@ endif()
 project(taxxevasion)
 
 set(SRCS
+    "src/bitboard.h"
+    "src/board.cpp"
+    "src/board.h"
+    "src/defs.h"
     "src/main.cpp"
 )
 
