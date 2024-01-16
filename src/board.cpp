@@ -1,4 +1,5 @@
 #include "board.h"
+#include "attacks.h"
 
 #include <charconv>
 
@@ -133,4 +134,29 @@ std::string Board::fenStr() const
     fen += " 1";
 
     return fen;
+}
+
+void Board::makeMove(Move move)
+{
+    m_States.push_back(state());
+    state().halfMoveClock++;
+
+    if (!move.isDouble())
+        pieces(m_SideToMove) ^= (1ull << move.srcPos());
+    else
+        state().halfMoveClock = 0;
+
+    pieces(m_SideToMove) |= (1ull << move.dstPos());
+
+    BitBoard adjOpps = pieces(flip(m_SideToMove)) & attacks::adjSquaresBB(1ull << move.dstPos());
+    pieces(m_SideToMove) |= adjOpps;
+    pieces(flip(m_SideToMove)) ^= adjOpps;
+
+    m_SideToMove = flip(m_SideToMove);
+}
+
+void Board::unmakeMove(Move move)
+{
+    m_SideToMove = flip(m_SideToMove);
+    m_States.pop_back();
 }

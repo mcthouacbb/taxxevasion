@@ -30,6 +30,9 @@ public:
     std::string fenStr() const;
 
     Piece pieceAt(int sq) const;
+
+    void makeMove(Move move);
+    void unmakeMove(Move move);
 private:
     BoardState& state();
     const BoardState& state() const;

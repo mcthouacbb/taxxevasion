@@ -32,17 +32,12 @@ inline constexpr Color flip()
     return static_cast<Color>(static_cast<int>(c) ^ 1);
 }
 
-enum class MoveType
-{
-    SINGLE,
-    DOUBLE = 1 << 12
-};
-
 struct Move
 {
 public:
     Move() = default;
-    Move(int src, int dst, MoveType type);
+    Move(int dst);
+    Move(int src, int dst);
 
     bool operator==(const Move& other) const = default;
     bool operator!=(const Move& other) const = default;
@@ -50,30 +45,35 @@ public:
     int srcPos() const;
     int dstPos() const;
     int fromTo() const;
-    MoveType type() const;
+    bool isDouble() const;
 private:
     static constexpr int TYPE_MASK = 1 << 12;
 
     uint16_t m_Data;
 };
 
-inline Move::Move(int src, int dst, MoveType type)
-    : m_Data(0)
+inline Move::Move(int dst)
+{
+    assert(dst >= 0 && dst < 49 && "Dst pos is out of range");
+    m_Data = static_cast<uint16_t>(dst | (49 << 6));
+}
+
+inline Move::Move(int src, int dst)
 {
     assert(src >= 0 && src < 49 && "Src pos is out of range");
     assert(dst >= 0 && dst < 49 && "Dst pos is out of range");
-    m_Data = static_cast<uint16_t>(src | (dst << 6) | static_cast<int>(type));
+    m_Data = static_cast<uint16_t>(src | (dst << 6));
 }
 
 
 inline int Move::srcPos() const
 {
-    return m_Data & 63;
+    return (m_Data >> 6) & 63;
 }
 
 inline int Move::dstPos() const
 {
-    return (m_Data >> 6) & 63;
+    return m_Data & 63;
 }
 
 inline int Move::fromTo() const
@@ -81,9 +81,9 @@ inline int Move::fromTo() const
     return m_Data & 4095;
 }
 
-inline MoveType Move::type() const
+inline bool Move::isDouble() const
 {
-    return static_cast<MoveType>(m_Data & TYPE_MASK);
+    return srcPos() != 49;
 }
 
 constexpr int MAX_PLY = 128;

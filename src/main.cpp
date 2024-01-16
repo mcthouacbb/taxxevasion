@@ -1,4 +1,5 @@
 #include <iostream>
+#include "attacks.h"
 #include "board.h"
 
 const std::string positions[] = {
@@ -26,6 +27,11 @@ const std::string positions[] = {
 
 int main()
 {
+    attacks::init();
+    for (int sq = 0; sq < 64; sq++)
+    {
+        printBB(attacks::doubleMovesBB(sq));
+    }
     for (auto& pos : positions)
     {
         Board board;
