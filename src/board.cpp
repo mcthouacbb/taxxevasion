@@ -171,3 +171,17 @@ void Board::makeNullMove()
     m_States.push_back(state());
     m_SideToMove = flip(m_SideToMove);
 }
+
+bool Board::gameOver() const
+{
+    if (pieces(Color::WHITE) == 0)
+        return true;
+    if (pieces(Color::BLACK) == 0)
+        return true;
+    if (halfMoveClock() >= 100)
+        return true;
+    BitBoard allMoves = (empty() & attacks::singleMoves(attacks::singleMoves(pieces(Color::WHITE) | pieces(Color::BLACK))));
+    if (allMoves == 0)
+        return true;
+    return false;
+}

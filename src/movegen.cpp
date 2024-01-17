@@ -9,7 +9,7 @@ void genMoves(const Board& board, MoveList& moveList)
         return;
 
     BitBoard stmPieces = board.pieces(board.sideToMove());
-    BitBoard moveMask = ~(board.pieces(Color::WHITE) | board.pieces(Color::BLACK) | board.blockers());
+    BitBoard moveMask = board.empty();
 
     BitBoard singles = attacks::singleMoves(stmPieces);
     singles &= moveMask;

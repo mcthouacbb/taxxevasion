@@ -34,7 +34,7 @@ public:
     Color sideToMove() const;
     Piece pieceAt(int sq) const;
     BitBoard pieces(Color color) const;
-    BitBoard blockers() const;
+    BitBoard empty() const;
     int halfMoveClock() const;
 
     void makeMove(Move move);
@@ -49,17 +49,6 @@ private:
     Color m_SideToMove;
     std::vector<BoardState> m_States;
 };
-
-inline bool Board::gameOver() const
-{
-    if (pieces(Color::WHITE) == 0)
-        return true;
-    if (pieces(Color::BLACK) == 0)
-        return true;
-    if (halfMoveClock() >= 100)
-        return true;
-    return false;
-}
 
 inline Color Board::sideToMove() const
 {
@@ -82,14 +71,14 @@ inline BitBoard Board::pieces(Color color) const
     return state().pieces[static_cast<int>(color)];
 }
 
-inline BitBoard Board::blockers() const
+inline BitBoard Board::empty() const
 {
-    return m_Blockers;
+    return ~(pieces(Color::WHITE) | pieces(Color::BLACK) | m_Blockers);
 }
 
 inline int Board::halfMoveClock() const
 {
-    return state().halfMoveClock;
+    return state().halfMoveClock;    
 }
 
 inline BoardState& Board::state()
