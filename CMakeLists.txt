@@ -21,6 +21,8 @@ set(SRCS
     "src/main.cpp"
     "src/movegen.cpp"
     "src/movegen.h"
+    "src/misc.cpp"
+    "src/misc.h"
 )
 
 add_executable(taxx-evasion ${SRCS})
