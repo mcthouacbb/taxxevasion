@@ -1,4 +1,5 @@
 #include "board.h"
+#include "attacks.h"
 
 #include <charconv>
 
@@ -24,13 +25,13 @@ void Board::setToFen(const std::string_view& fen)
             case 'X':
             case 'b':
             case 'B':
-                pieces(Color::BLACK) |= 1ull << sq++;
+                    state().pieces[static_cast<int>(Color::BLACK)] |= 1ull << sq++;
                 break;
             case 'o':
             case 'O':
             case 'w':
             case 'W':
-                pieces(Color::WHITE) |= 1ull << sq++;
+                state().pieces[static_cast<int>(Color::WHITE)] |= 1ull << sq++;
                 break;
             case '-':
                 m_Blockers |= 1ull << sq++;
@@ -133,4 +134,54 @@ std::string Board::fenStr() const
     fen += " 1";
 
     return fen;
+}
+
+void Board::makeMove(Move move)
+{
+    if (move.isNull())
+    {
+        makeNullMove();
+        return;
+    }
+    m_States.push_back(state());
+    state().halfMoveClock++;
+
+    if (move.isDouble())
+        state().pieces[static_cast<int>(m_SideToMove)] ^= (1ull << move.srcPos());
+    else
+        state().halfMoveClock = 0;
+
+    state().pieces[static_cast<int>(m_SideToMove)] |= (1ull << move.dstPos());
+
+    BitBoard adjOpps = state().pieces[static_cast<int>(flip(m_SideToMove))] & attacks::adjSquaresBB(move.dstPos());
+    state().pieces[static_cast<int>(m_SideToMove)] |= adjOpps;
+    state().pieces[static_cast<int>(flip(m_SideToMove))] ^= adjOpps;
+
+    m_SideToMove = flip(m_SideToMove);
+}
+
+void Board::unmakeMove()
+{
+    m_SideToMove = flip(m_SideToMove);
+    m_States.pop_back();
+}
+
+void Board::makeNullMove()
+{
+    m_States.push_back(state());
+    m_SideToMove = flip(m_SideToMove);
+}
+
+bool Board::gameOver() const
+{
+    if (pieces(Color::WHITE) == 0)
+        return true;
+    if (pieces(Color::BLACK) == 0)
+        return true;
+    if (halfMoveClock() >= 100)
+        return true;
+    BitBoard allMoves = (empty() & attacks::singleMoves(attacks::singleMoves(pieces(Color::WHITE) | pieces(Color::BLACK))));
+    if (allMoves == 0)
+        return true;
+    return false;
 }
