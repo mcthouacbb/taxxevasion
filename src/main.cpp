@@ -8,6 +8,26 @@
 #include "movegen.h"
 #include "modes/random.hpp"
 #include "modes/most_captures.hpp"
+#include "search.h"
+
+void printSearchInfo(const SearchInfo& info)
+{
+    std::cout << "info depth " << info.depth;
+    int time = info.time.count();
+    std::cout << " nodes " << info.nodes << " time " << time << " nps " << info.nodes * 1000 / std::max(time, 1);
+    std::cout << " score cp " << info.score;
+    std::cout << " pv ";
+    for (auto& pvMove : info.pv)
+    {
+        std::cout << moveStr(pvMove) << " ";
+    }
+    std::cout << std::endl;
+}
+
+void printBestMove(Move move)
+{
+    std::cout << "bestmove " << moveStr(move) << std::endl;
+}
 
 Move moveFromStr(const MoveList& legals, std::string_view moveStr)
 {
@@ -43,6 +63,7 @@ int main()
     Board board;
     MoveList legalMoves;
     genMoves(board, legalMoves);
+    Search search;
     std::string line;
     while (std::getline(std::cin, line))
     {
@@ -107,6 +128,24 @@ int main()
             std::cout << "Nodes: " << nodes << std::endl;
             std::cout << "Time: " << time.count() << std::endl;
             std::cout << "nps: " << static_cast<uint64_t>(nodes / time.count()) << std::endl;
+        }
+        else if (tok == "go")
+        {
+            SearchLimits limits = {};
+            limits.maxDepth = MAX_PLY - 1;
+            while (ss)
+            {
+                ss >> tok;
+                if (tok == "depth")
+                    ss >> limits.maxDepth;
+                else if (tok == "movetime")
+                {
+                    int time;
+                    ss >> time;
+                    limits.maxTime = Duration(time);
+                }
+            }
+            search.run(board, limits);
         }
         else if (tok == "undo")
         {
