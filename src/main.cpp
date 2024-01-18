@@ -6,6 +6,7 @@
 #include "misc.h"
 #include "attacks.h"
 #include "movegen.h"
+#include "modes/random.hpp"
 
 Move moveFromStr(const MoveList& legals, std::string_view moveStr)
 {
@@ -67,6 +68,10 @@ int main()
 
             legalMoves.clear();
             genMoves(board, legalMoves);
+        }
+        else if (tok == "randmove")
+        {
+            std::cout << moveStr(randomMove(board, legalMoves)) << std::endl;
         }
         else if (tok == "move")
         {

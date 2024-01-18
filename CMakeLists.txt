@@ -10,6 +10,8 @@ endif()
 project(taxxevasion)
 
 set(SRCS
+    "src/modes/random.hpp"
+
     "src/utils/static_vector.h"
 
     "src/attacks.cpp"
