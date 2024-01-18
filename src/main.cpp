@@ -7,6 +7,7 @@
 #include "attacks.h"
 #include "movegen.h"
 #include "modes/random.hpp"
+#include "modes/most_captures.hpp"
 
 Move moveFromStr(const MoveList& legals, std::string_view moveStr)
 {
@@ -71,7 +72,11 @@ int main()
         }
         else if (tok == "randmove")
         {
-            std::cout << moveStr(randomMove(board, legalMoves)) << std::endl;
+            std::cout << moveStr(randomMove(legalMoves)) << std::endl;
+        }
+        else if (tok == "mostcaptures")
+        {
+            std::cout << moveStr(mostCaptures(board, legalMoves)) << std::endl;
         }
         else if (tok == "move")
         {
