@@ -1,7 +1,9 @@
+#pragma once
+
 #include "../movegen.h"
 #include <random>
 
-Move randomMove(const Board& board, const MoveList& moves)
+Move randomMove(const MoveList& moves)
 {
     static std::random_device rd;
     static const unsigned int seed = rd();
